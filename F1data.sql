@@ -94,7 +94,13 @@ ORDER BY w.won DESC
 -- 5. Return the driver that won the qualifying head to head for each constructor in each year
 --    This query excludes years 1996 to 2002 due to incompleteness of data
 
-SELECT m.year,m.raceId,m.position, d.driverRef,c.constructorRef,COUNT(m.minim) OVER 
+WITH cte_max2 as(
+WITH cte_max as(
+WITH
+cte_min as (SELECT r.year, q.position, MIN(q.position) OVER (PARTITION BY q.raceId,q.constructorId) minim,q.raceId,q.driverId,
+q.constructorId FROM qualifying q JOIN races r ON r.raceId = q.raceId)
+
+SELECT m.year,m.raceid,m.position, d.driverRef,c.constructorRef,COUNT(m.minim) OVER 
 (PARTITION BY m.year,m.constructorId,d.driverRef) won 
 FROM cte_min AS m
 JOIN drivers d
@@ -111,4 +117,4 @@ JOIN (SELECT COUNT(raceId) total_races, year from races GROUP BY year) r
 ON r.year = m.year
 WHERE m.won = m.maxim
 GROUP BY m.year, m.constructorRef
-HAVING m.year NOT BETWEEN 1996 AND 2002
+HAVING m.year NOT BETWEEN 1996 AND 2002;
