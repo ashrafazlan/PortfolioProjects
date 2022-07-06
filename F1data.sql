@@ -235,4 +235,15 @@ GROUP BY ca.constructorRef)
 SELECT  cs.constructorRef, ROUND(cs.sum_avg_q1- min_sum,2) diff_to_best_q1_constructor FROM cte_sum cs 
 ORDER BY diff_to_best_q1_constructor
 
---10. 
+--10. Return Q2 and Q3 appearance count for each constructor in 2022
+
+WITH q2_app AS(SELECT q.constructorId, COUNT(q.q2) Q2_appearance from qualifying_2022 q
+WHERE q.q2 != 0
+GROUP BY q.constructorId)
+
+SELECT c.constructorRef, q2.Q2_appearance, COUNT(q.q3) Q3_appearance from qualifying_2022 q
+JOIN constructors c on c.constructorId=q.constructorId
+JOIN q2_app q2 ON q2.constructorId = q.constructorId
+WHERE q.q3 != 0
+GROUP BY c.constructorRef
+
