@@ -5,7 +5,7 @@ This repository contains projects that I have pursued on my own volition and sel
 NOTE: This project is valid up until the 2022 Canadian Grand Prix.  
 This project has six aims:
 
-1.) Determine whether current drivers are stronger in qualifying at specific tracks which are on the 2022 race calendar.  
+1.) Determine whether current drivers are good in qualifying at specific tracks which are on the 2022 race calendar.  
 2.) Determine the win rate of current drivers in qualifying battles vs their teammates for drivers who have more than 100 qualifying rounds entered.  
 3.) Determine the qualifying head to head battle between drivers in each team in 2022.     
 4.) Determine the average changes in qualifying session times for each team in 2022.  
