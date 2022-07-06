@@ -11,3 +11,6 @@ This project has three points of interest:
   
 ## Methodology  
 1.) The dataset is sourced from this [kaggle](https://www.kaggle.com/code/anandaramg/f1-champ-eda-classification-100-accuracy/data?select=circuits.csv) page.
+2.) I preprocessed data in the CSV files using VBA.
+3.) Using MySQL Workbench, I created tables and imported the data from the CSV files into the tables created.
+4.) Using SQL, I built queries which involved
