@@ -16,6 +16,7 @@ For i = 1 To lastrow
 Next i
 
 End Sub
+
 DOB format drivers csv
 Sub dob_format()
 
@@ -24,6 +25,7 @@ For i = 1 To lastrow
     Cells(i, 7).NumberFormat = "yyyy/mm/dd"
 Next i
 End Sub
+
 remove “\N” from column ‘number’
 Sub driver_number_remove_N()
 
@@ -47,6 +49,7 @@ For i = 1 To lastrow
     End If
 Next i
 End Sub
+
 Remove “\N” from time in races csv
 Sub races_time_remove_N()
 
@@ -58,6 +61,7 @@ For i = 1 To lastrow
     End If
 Next i
 End Sub
+
 Format date in races csv
 Sub races_date_format()
 
@@ -67,6 +71,7 @@ For i = 1 To lastrow
 Next i
 End Sub
 New CSV code
+
 format q1,q2 and q3
 Sub format_new_csv_qualifying_q1_q2_q3()
 ' DNF values are removed
@@ -85,6 +90,7 @@ For i = 1 To lastrow
 Next i
 
 End Sub
+
 remove “NC” from position column
 Sub new_csv_remove_NC()
 
