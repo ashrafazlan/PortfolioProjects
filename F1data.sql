@@ -1,4 +1,5 @@
--- The SQL used in Project 1.) 
+-- The SQL used in Project 1.) Exploratory Analysis, Web Scraping and Visualization of Formula 1 Qualifying Data
+-- is shown here
 
 
 -- 1. Table creations
@@ -86,8 +87,9 @@ RETURN seconds;
 END
 //
 
--- 4. Return tracks where a driver excels at in qualifying
---    Excelling at a track is subjectively defined as a track whereby a driver has more than 5 qualifying battles won versus his teammate at a win rate of minimum 80%
+-- 4. Return current drivers that dominate a track in qualifying
+--    Track domination in qualifying is subjectively defined as a track whereby a driver has more than 5 qualifying battles won versus his teammate 
+--    with a win rate of minimum 75%
 
 WITH cte_won AS (
 WITH cte_min AS (SELECT r.year,r.name track, q.position, MIN(q.position) OVER (PARTITION BY q.raceId,q.constructorId) minim,
@@ -98,36 +100,68 @@ SELECT  d.driverRef,m.track, m.driverId, COUNT(m.minim) OVER (PARTITION BY m.tra
 FROM cte_min m
 JOIN drivers d ON d.driverId = m.driverId
 WHERE m.position = m.minim)
-SELECT w.driverRef, w.track, w.won, w.times_entered_race, ROUND(w.won/w.times_entered_race *100,2) percent_win
+SELECT w.driverRef, q22.number,w.track, w.won, w.times_entered_race, ROUND(w.won/w.times_entered_race *100,2) percent_win
 FROM cte_won W
-WHERE w.won > 5 AND ROUND(w.won/w.times_entered_race *100,2) > 80
+JOIN (SELECT name FROM races WHERE year = 2022) r ON r.name = w.track 
+JOIN (SELECT q2022.driverRef, r.year FROM qualifying_2022 q2022
+JOIN races r ON r.raceId = q2022.raceId
+GROUP BY r.year,q2022.driverRef) current_year
+ON current_year.driverRef = w.driverRef
+JOIN qualifying_2022 q22 ON q22.driverRef = w.driverRef
+WHERE w.won > 5 AND ROUND(w.won/w.times_entered_race *100,2) > 75 AND w.driverRef != "hulkenberg" 
 GROUP BY w.track, w.driverRef 
 ORDER BY w.won DESC
+;
 
--- 5. Return the driver that won the qualifying head to head for each constructor in each year
---    This query excludes years 1996 to 2002 due to incompleteness of data
+-- 5. Return current drivers who have more than 100 qualifying entrances in their career up until 2021 and their win rate
 
-WITH cte_max2 as(
-WITH cte_max as(
-WITH
-cte_min as (SELECT r.year, q.position, MIN(q.position) OVER (PARTITION BY q.raceId,q.constructorId) minim,q.raceId,q.driverId,
-q.constructorId FROM qualifying q JOIN races r ON r.raceId = q.raceId)
+WITH cte_win_rate AS (
+WITH min_cte AS (SELECT driverID, position,raceId, constructorId, MIN(position) OVER (PARTITION BY raceId,constructorId)
+ min FROM qualifying),
+qualis_entered_cte AS ( SELECT driverId, count(raceID) qualis_entered
+ FROM qualifying
+ GROUP BY driverId)
+SELECT d.driverRef, r.qualis_entered, count(m.min) won, CONCAT(ROUND(count(m.min)/r.qualis_entered*100,2),"%") 
+win_rate FROM min_cte as m
+JOIN qualis_entered_cte AS r
+ON m.driverId = r.driverId
+JOIN drivers AS d
+ON r.driverId = d.driverId
+WHERE m.position = m.min AND qualis_entered > 100 
+GROUP BY r.driverId
+ORDER BY win_rate DESC
+)
+SELECT cw.*,q2022.number FROM cte_win_rate cw
+JOIN qualifying_2022 q2022 ON q2022.driverRef = cw.driverRef
+WHERE cw.driverRef != 'hulkenberg'
+GROUP BY driverRef
+ORDER BY win_rate DESC
 
-SELECT m.year,m.raceid,m.position, d.driverRef,c.constructorRef,COUNT(m.minim) OVER 
-(PARTITION BY m.year,m.constructorId,d.driverRef) won 
-FROM cte_min AS m
-JOIN drivers d
-ON d.driverId = m.driverId
-JOIN constructors c
-ON c.constructorId = m.constructorId
-WHERE m.position = m.minim
-ORDER BY m.year)
-SELECT m.year, m.raceid,m.driverRef,m.constructorRef, MAX(m.won) OVER (PARTITION BY m.year, m.constructorRef) maxim,m.won
-FROM cte_max m)
-SELECT m.year,m.driverRef,m.constructorRef,m.won, r.total_races
-FROM cte_max2 m 
-JOIN (SELECT COUNT(raceId) total_races, year from races GROUP BY year) r
-ON r.year = m.year
-WHERE m.won = m.maxim
-GROUP BY m.year, m.constructorRef
-HAVING m.year NOT BETWEEN 1996 AND 2002;
+--6. Return remaining grand prix where there is track domination by a driver
+
+WITH cte_won AS (
+WITH cte_min AS (SELECT r.year,r.name track, q.position, MIN(q.position) OVER (PARTITION BY q.raceId,q.constructorId) minim,
+q.raceId,q.driverId,
+q.constructorId, COUNT(r.name) OVER (PARTITION BY q.driverId, r.name) times_entered_race FROM qualifying q 
+JOIN races r ON r.raceId = q.raceId)
+SELECT  d.driverRef,m.track, m.driverId, COUNT(m.minim) OVER (PARTITION BY m.track,m.driverID) won, m.times_entered_race 
+FROM cte_min m
+JOIN drivers d ON d.driverId = m.driverId
+WHERE m.position = m.minim)
+SELECT w.track, r.date 
+FROM cte_won W
+JOIN (SELECT name,date FROM races WHERE year = 2022) r ON r.name = w.track 
+JOIN (SELECT q2022.driverRef, r.year FROM qualifying_2022 q2022
+JOIN races r ON r.raceId = q2022.raceId
+GROUP BY r.year,q2022.driverRef) current_year
+ON current_year.driverRef = w.driverRef
+JOIN qualifying_2022 q22 ON q22.driverRef = w.driverRef
+JOIN(SELECT r.name, r.date FROM races r 
+WHERE r.date > CURDATE()) future_race
+WHERE w.won > 5 AND ROUND(w.won/w.times_entered_race *100,2) > 75 AND w.driverRef != "hulkenberg" 
+AND future_race.name = w.track 
+GROUP BY w.track 
+ORDER BY r.date 
+;
+
+--7. 
