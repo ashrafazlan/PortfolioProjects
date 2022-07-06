@@ -2,8 +2,8 @@ This repository contains projects that I have pursued on my own volition and sel
 
 # Project 1: Exploratory Analysis, Web Scraping and Visualization of Formula 1 Qualifying Data  
 
-NOTE: As the current season is still ongoing, this project is valid up until the 2022 Canadian Grand Prix.  
-This project has four aims:
+NOTE: This project is valid up until the 2022 Canadian Grand Prix.  
+This project has five aims:
 
 1.) Determine whether current drivers tend to perform better in qualifying at specific tracks.  
 2.) Determine the win rate of current drivers in qualifying battles vs their teammates for drivers who have more than 100 qualifying rounds entered.  
@@ -16,7 +16,7 @@ This project has four aims:
 2.) Using VBA, I preprocessed data in the CSV files.    
 3.) Using MySQL Workbench, I created tables and imported the data from the CSV files into the tables created.  
 4.) Using BeautifulSoup in [Python](https://github.com/ashrafazlan/PortfolioProjects/blob/main/Project_1_python_code.py), I scrapped Formula 1 2022 qualifying data.  
-5.) Using PopSQL and MySQL Workbench, I built [queries](https://github.com/ashrafazlan/PortfolioProjects/blob/main/Project_1_SQL_code.sql) to realize the points of interests. Amongst the SQL functions and features used were stored functions, view   creations, nesting CTEs, window functions and multiple JOIN statements.  
+5.) Using PopSQL and MySQL Workbench, I built [queries](https://github.com/ashrafazlan/PortfolioProjects/blob/main/Project_1_SQL_code.sql) to realize the aims of the   project. Amongst the SQL functions and features used were stored functions, view creations, nesting CTEs, window functions and multiple JOIN statements.  
 6.) Using Tableau Public, I created visuals for my findings.
 
 ## Data Visualizations
