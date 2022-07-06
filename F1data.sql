@@ -87,7 +87,7 @@ RETURN seconds;
 END
 //
 
--- 4. Return current drivers that dominate a track in qualifying
+-- 4. Return current track dominations in qualifying for current drivers for tracks that are part of the 2022 calendar
 --    Track domination in qualifying is subjectively defined as a track whereby a driver has more than 5 qualifying battles won versus his teammate 
 --    with a win rate of minimum 75%
 
@@ -123,10 +123,8 @@ qualis_entered_cte AS ( SELECT driverId, count(raceID) qualis_entered
  GROUP BY driverId)
 SELECT d.driverRef, r.qualis_entered, count(m.min) won, CONCAT(ROUND(count(m.min)/r.qualis_entered*100,2),"%") 
 win_rate FROM min_cte as m
-JOIN qualis_entered_cte AS r
-ON m.driverId = r.driverId
-JOIN drivers AS d
-ON r.driverId = d.driverId
+JOIN qualis_entered_cte AS r ON m.driverId = r.driverId
+JOIN drivers AS d ON r.driverId = d.driverId
 WHERE m.position = m.min AND qualis_entered > 100 
 GROUP BY r.driverId
 ORDER BY win_rate DESC
@@ -137,7 +135,7 @@ WHERE cw.driverRef != 'hulkenberg'
 GROUP BY driverRef
 ORDER BY win_rate DESC
 
---6. Return remaining grand prix where there is track domination by a driver
+--6. Return the remaining grand prixs in the 2022 calendar where there is track domination by a driver
 
 WITH cte_won AS (
 WITH cte_min AS (SELECT r.year,r.name track, q.position, MIN(q.position) OVER (PARTITION BY q.raceId,q.constructorId) minim,
@@ -164,4 +162,77 @@ GROUP BY w.track
 ORDER BY r.date 
 ;
 
---7. 
+--7. Return qualifying head to head for each team in 2022 so far
+
+WITH cte_min as (SELECT q.position, MIN(q.position) OVER (PARTITION BY q.raceId,q.constructorId) minim,q.raceId,q.driverRef,
+q.constructorId FROM qualifying_2022 q)
+SELECT m.driverRef,c.constructorRef, COUNT(m.minim) quali_won FROM cte_min AS m
+JOIN constructors c ON c.constructorId = m.constructorId
+WHERE m.position = m.minim AND m.driverRef != 'hulkenberg'
+GROUP BY m.constructorId,m.driverRef
+;
+
+--8. Return the average time difference between sessions for each constructor in 2022
+--    Since weather can affect the time differences between qualifying sessions, outliers are removed
+--    Outliers are defined as session pairs where the average time difference for all constructors is less than 2s or more than 2s
+--    A view is created first which is implemented in the actual query 
+
+CREATE VIEW view_avg_diff_q2_q1_2022 AS
+(WITH cte_exclude_1 AS(
+SELECT  q.raceId exclude,AVG(t.diff_q2_q1) average_diff_q2_q1 from qualifying_2022 q
+LEFT JOIN (SELECT q2-q1 diff_q2_q1, driverRef, raceId FROM qualifying_2022 WHERE q2 != 0) t
+ON t.driverRef = q.driverRef AND t.raceId = q.raceId
+GROUP BY exclude
+HAVING average_diff_q2_q1 < -2 OR average_diff_q2_q1 > 2)
+
+SELECT c.constructorRef, ROUND(AVG(diff_q2_q1),2) avg_diff_q2_q1 FROM qualifying_2022 q
+JOIN constructors c
+ON q.constructorId = c.constructorId
+LEFT JOIN cte_exclude_1 e
+ON e.exclude = q.raceId
+LEFT JOIN(
+SELECT convert_time(q2)-convert_time(q1)  diff_q2_q1,driverRef,raceId,constructorId FROM qualifying_2022
+WHERE q2!= 0) b
+ON b.driverRef=q.driverRef AND b.raceId = q.raceId
+WHERE e.exclude IS NULL
+GROUP BY c.constructorRef
+ORDER BY avg_diff_q2_q1)
+;
+WITH cte_exclude_2 AS (
+SELECT  q.raceId exclude,AVG(t.diff_q3_q2) average_diff_q3_q2 from qualifying_2022 q
+LEFT JOIN (SELECT q3-q2 diff_q3_q2, driverRef, raceId FROM qualifying_2022 WHERE q3 != 0) t
+ON t.driverRef = q.driverRef AND t.raceId = q.raceId
+GROUP BY exclude
+HAVING average_diff_q3_q2 < -2 OR average_diff_q3_q2 > 2)
+
+SELECT c.constructorRef,v.avg_diff_q2_q1, ROUND(AVG(diff_q3_q2),2) avg_diff_q3_q2, 
+v.avg_diff_q2_q1+ROUND(AVG(diff_q3_q2),2) avg_diff_q3_q1 FROM qualifying_2022 q
+JOIN constructors c
+ON q.constructorId = c.constructorId
+JOIN view_avg_diff_q2_q1_2022 v ON v.constructorRef = c.constructorRef
+LEFT JOIN cte_exclude_2 e
+ON e.exclude = q.raceId
+LEFT JOIN(
+SELECT convert_time(q3)-convert_time(q2)  diff_q3_q2,driverRef,raceId,constructorId FROM qualifying_2022
+WHERE q3!= 0) b
+ON b.driverRef=q.driverRef AND b.raceId = q.raceId
+WHERE e.exclude IS NULL
+GROUP BY c.constructorRef
+ORDER BY avg_diff_q3_q1
+;
+
+--9. Return the difference between each constructors average Q1 times and the best average Q1 times by a constructor in 2022
+
+WITH cte_sum AS(
+WITH cte_avg AS(
+SELECT q.raceId,c.constructorRef, AVG(convert_time(q.q1)) avg_q1 FROM qualifying_2022 q
+JOIN constructors c ON c.constructorId = q.constructorId
+GROUP BY raceId,c.constructorRef
+ORDER BY q.raceId
+) 
+SELECT SUM(ca.avg_q1)/COUNT(ca.avg_q1) sum_avg_q1, ca.constructorRef,MIN( SUM(ca.avg_q1)/COUNT(ca.avg_q1) ) OVER( ) min_sum FROM cte_avg ca
+GROUP BY ca.constructorRef)
+SELECT  cs.constructorRef, ROUND(cs.sum_avg_q1- min_sum,2) diff_to_best_q1_constructor FROM cte_sum cs 
+ORDER BY diff_to_best_q1_constructor
+
+--10. 
