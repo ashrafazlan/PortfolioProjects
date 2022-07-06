@@ -173,7 +173,7 @@ GROUP BY m.constructorId,m.driverRef
 --8. Return the average time difference between sessions for each constructor in 2022
 --    Since weather can affect the time differences between qualifying sessions, outliers are removed
 --    Outliers are defined as session pairs where the average time difference for all constructors is less than 2s or more than 2s
---    For instance, the Q2 Canadian Grand Prix session is an outlier since the average time difference between Q2 and Q1 for all constructors was -7s 
+--    For instance, the Q2 session for the Canadian Grand Prix is an outlier since the average time difference between Q2 and Q1 for all constructors was -7s 
 --    A view is created first which is implemented in the actual query 
 
 CREATE VIEW view_avg_diff_q2_q1_2022 AS
