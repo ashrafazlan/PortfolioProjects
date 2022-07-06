@@ -14,6 +14,6 @@ This project has four points of interest:
 1.) The dataset is sourced from this [kaggle](https://www.kaggle.com/code/anandaramg/f1-champ-eda-classification-100-accuracy/data?select=circuits.csv) page.    
 2.) Using VBA, I preprocessed data in the CSV files.    
 3.) Using MySQL Workbench, I created tables and imported the data from the CSV files into the tables created.  
-4.) Using BeautifulSoup in Python, I scrapped Formula 1 2022 qualifying data.
+4.) Using BeautifulSoup in Python, I scrapped Formula 1 2022 qualifying data.  
 5.) Using PopSQL and MySQL Workbench, I built queries to realize the points of interests. Amongst the SQL functions and features used were stored functions, view   creations, nesting CTEs, window functions and multiple JOIN statements.  
 6.) Using Tableau Public, I created visuals for my findings.
