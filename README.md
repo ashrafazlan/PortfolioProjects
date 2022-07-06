@@ -20,7 +20,7 @@ This project has six aims:
 6.) Using Tableau Public, I created visuals for my findings which also contains an analysis of these findings.
 
 ## Data Visualizations
-The first visualization covers the first three aims and aim 6 while the second visualization covers aims 4, 5 and 6. 
+The first visual covers the first three aims and aim 6 while the second visual covers aims 4, 5 and 6. 
 
 Visual 1: [F1 2022 Qualifying Head to Head and Qualifying Track Dominations](https://public.tableau.com/app/profile/ashraf.azlan/viz/F12022QualifyingHeadtoHeadandQualifyingTrackDominations/F12022QualifyingHeadtoHeadandQualifyingTrackDominations)  
 Visual 2: [F1 2022 Qualifying Session Times Average Differences](https://public.tableau.com/app/profile/ashraf.azlan/viz/F12022QualifyingSessionsTimeDifference/F12022QualifyingSessionsTimeDifferences)
