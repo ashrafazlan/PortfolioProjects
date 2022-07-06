@@ -1,10 +1,11 @@
--- The objective of this data analysis is to garner insight about F1 drivers and constructors in qualifying.
+-- The SQL used in Project 1.) 
 
 
 -- 1. Table creations
---    4 tables are created, qualifying, constructors, races and the drivers table
---    All 4 table data is imported from the CSV file which corresponds to the name of the table from the data source here: 
+--    5 tables are created, qualifying, constructors, races and the drivers table
+--    4 tables had data imported from the CSV file which corresponds to the name of the table from the data source here: 
 --    https://www.kaggle.com/code/anandaramg/f1-champ-eda-classification-100-accuracy/data
+--    1 table had data imported from the CSV file generated in Python after web scraping.
 
 CREATE table qualifying (
 qualifyId INT,
@@ -46,6 +47,18 @@ dob DATE,
 nationality VARCHAR(20)
 )
 ;
+
+CREATE table qualifying_2022 (
+qualifyId INT,
+raceId INT,
+constructorId INT,
+position INT,
+number INT,
+driverId INT,
+q1 TIME(3),
+q2 TIME(3),
+q3 TIME(3)
+)
 
 -- 2. Understanding the data available
 --    This query returns the number of races per year detailed in the qualifying csv compared to the actual number of races per year
