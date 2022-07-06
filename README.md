@@ -15,5 +15,5 @@ This project has four points of interest:
 2.) Using VBA, I preprocessed data in the CSV files.    
 3.) Using MySQL Workbench, I created tables and imported the data from the CSV files into the tables created.  
 4.) Using BeautifulSoup in Python, I scrapped Formula 1 2022 qualifying data.  
-5.) Using PopSQL and MySQL Workbench, I built queries to realize the points of interests. Amongst the SQL functions and features used were stored functions, view   creations, nesting CTEs, window functions and multiple JOIN statements.  
+5.) Using PopSQL and MySQL Workbench, I built [queries](https://github.com/ashrafazlan/PortfolioProjects/blob/main/Project_1_SQL_code.sql) to realize the points of interests. Amongst the SQL functions and features used were stored functions, view   creations, nesting CTEs, window functions and multiple JOIN statements.  
 6.) Using Tableau Public, I created visuals for my findings.
