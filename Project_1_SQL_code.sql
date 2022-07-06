@@ -1,12 +1,10 @@
--- The SQL used in Project 1.) Exploratory Analysis, Web Scraping and Visualization of Formula 1 Qualifying Data
--- is shown here
-
+-- The SQL code used in Project 1.) Analysis, Web Scraping and Visualization of Formula 1 Qualifying Data is shown here
 
 -- 1. Table creations
---    5 tables are created, qualifying, constructors, races and the drivers table
---    4 tables had data imported from the CSV file which corresponds to the name of the table from the data source here: 
+--    5 tables are created, qualifying, qualifying_2022, constructors, races and the drivers table
+--    All tables except qualifying_2022 table had data imported from the CSV file which corresponds to the name of the table from the data source here: 
 --    https://www.kaggle.com/code/anandaramg/f1-champ-eda-classification-100-accuracy/data
---    1 table had data imported from the CSV file generated in Python after web scraping.
+--    The qualifying_2022 table had data imported from the CSV file generated in Python after web scraping.
 
 CREATE table qualifying (
 qualifyId INT,
@@ -55,7 +53,7 @@ raceId INT,
 constructorId INT,
 position INT,
 number INT,
-driverId INT,
+driverRef VARCHAR(20),
 q1 TIME(3),
 q2 TIME(3),
 q3 TIME(3)
@@ -111,7 +109,7 @@ JOIN qualifying_2022 q22 ON q22.driverRef = w.driverRef
 WHERE w.won > 5 AND ROUND(w.won/w.times_entered_race *100,2) > 75 AND w.driverRef != "hulkenberg" 
 GROUP BY w.track, w.driverRef 
 ORDER BY w.won DESC
-;
+
 
 -- 5. Return current drivers who have more than 100 qualifying entrances in their career up until 2021 and their win rate
 
@@ -160,7 +158,7 @@ WHERE w.won > 5 AND ROUND(w.won/w.times_entered_race *100,2) > 75 AND w.driverRe
 AND future_race.name = w.track 
 GROUP BY w.track 
 ORDER BY r.date 
-;
+
 
 --7. Return qualifying head to head for each team in 2022 so far
 
@@ -175,6 +173,7 @@ GROUP BY m.constructorId,m.driverRef
 --8. Return the average time difference between sessions for each constructor in 2022
 --    Since weather can affect the time differences between qualifying sessions, outliers are removed
 --    Outliers are defined as session pairs where the average time difference for all constructors is less than 2s or more than 2s
+--    For instance, the Q2 Canadian Grand Prix session is an outlier since the average time difference between Q2 and Q1 for all constructors was -7s 
 --    A view is created first which is implemented in the actual query 
 
 CREATE VIEW view_avg_diff_q2_q1_2022 AS
@@ -219,7 +218,7 @@ ON b.driverRef=q.driverRef AND b.raceId = q.raceId
 WHERE e.exclude IS NULL
 GROUP BY c.constructorRef
 ORDER BY avg_diff_q3_q1
-;
+
 
 --9. Return the difference between each constructors average Q1 times and the best average Q1 times by a constructor in 2022
 
