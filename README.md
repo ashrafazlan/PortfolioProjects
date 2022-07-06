@@ -2,7 +2,7 @@ This repository contains projects that I have pursued on my own volition and sel
 
 # Project 1: Analysis, Web Scraping and Visualization of Formula 1 Qualifying Data  
 ## Project Aims  
-NOTE: This project is valid up until the 2022 Canadian Grand Prix.  
+NOTE: This project consists of data up until the weekend of the 2022 Canadian Grand Prix.  
 This project has six aims:
 
 1.) Determine whether current drivers are good in qualifying at specific tracks which are on the 2022 race calendar.  
