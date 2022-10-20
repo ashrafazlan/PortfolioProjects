@@ -4,7 +4,7 @@
 --    5 tables are created, qualifying, qualifying_2022, constructors, races and the drivers table
 --    All tables except qualifying_2022 table had data imported from the CSV file which corresponds to the name of the table from the data source here: 
 --    https://www.kaggle.com/code/anandaramg/f1-champ-eda-classification-100-accuracy/data
---    The qualifying_2022 table had data imported from the CSV file generated in Python after web scraping.
+--    The qualifying_2022 table had data imported from the CSV file generated in Python after web scraping
 
 CREATE table qualifying (
 qualifyId INT,
