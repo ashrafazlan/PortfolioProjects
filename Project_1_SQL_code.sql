@@ -1,4 +1,5 @@
 -- The SQL code used in Project 1.) Analysis, Web Scraping and Visualization of Formula 1 Qualifying Data is shown here
+
 -- 1. Table creations
 --    5 tables are created, qualifying, qualifying_2022, constructors, races and the drivers table
 --    All tables except qualifying_2022 table had data imported from the CSV file which corresponds to the name of the table from the data source here: 
@@ -70,7 +71,8 @@ JOIN (
 	) t ON t.year = r.year
 GROUP BY r.year
 ORDER BY r.year;
-	-- 3. Creating a function to simplify the conversion of time into seconds and microseconds
+
+-- 3. Creating a function to simplify the conversion of time into seconds and microseconds
 	DELIMITER //
 
 CREATE FUNCTION convert_time (time1 TIME(3))
@@ -85,6 +87,7 @@ BEGIN
 END
 
 //
+
 -- 4. Return current track dominations in qualifying for current drivers for tracks that are part of the 2022 calendar
 --    Track domination in qualifying is subjectively defined as a track whereby a driver has more than 5 qualifying battles won versus his teammate 
 --    with a win rate of minimum 75%
@@ -148,6 +151,7 @@ WHERE w.won > 5
 GROUP BY w.track
 	,w.driverRef
 ORDER BY w.won DESC;
+
 -- 5. Return current drivers who have more than 100 qualifying entrances in their career up until 2021 and their win rate
 WITH cte_win_rate AS (
 		WITH min_cte AS (
@@ -190,6 +194,7 @@ JOIN qualifying_2022 q2022 ON q2022.driverRef = cw.driverRef
 WHERE cw.driverRef != 'hulkenberg'
 GROUP BY driverRef
 ORDER BY win_rate DESC;
+
 --6. Return the remaining grand prixs in the 2022 calendar where there is track domination by a driver
 WITH cte_won AS (
 		WITH cte_min AS (
@@ -254,6 +259,7 @@ WHERE w.won > 5
 	AND future_race.name = w.track
 GROUP BY w.track
 ORDER BY r.DATE;
+
 --7. Return qualifying head to head for each team in 2022 so far
 WITH cte_min AS (
 		SELECT q.position
@@ -357,6 +363,7 @@ LEFT JOIN (
 WHERE e.exclude IS NULL
 GROUP BY c.constructorRef
 ORDER BY avg_diff_q3_q1;
+
 --9. Return the difference between each constructors average Q1 times and the best average Q1 times by a constructor in 2022
 WITH cte_sum AS (
 		WITH cte_avg AS (
@@ -381,6 +388,7 @@ SELECT cs.constructorRef
 FROM cte_sum cs
 
 ORDER BY diff_to_best_q1_constructor;
+
 --10. Return Q2 and Q3 appearance count for each constructor in 2022
 WITH q2_app AS (
 		SELECT q.constructorId
