@@ -1,4 +1,5 @@
-Attribute VB_Name = "Module2"
+Attribute VB_Name = "Project_1_VBA"
+
 ' Format q1, q2 and q3 in original qualifying data
 Sub format_qualifying_q1_q2_q3()
 ' \N values are removed
@@ -27,7 +28,7 @@ For i = 1 To lastrow
 Next i
 End Sub
 
-' Remove ì\Nî from column ënumberí
+' Remove ‚Äú\N‚Äù from column ‚Äònumber‚Äô
 Sub driver_number_remove_N()
 
 lastrow = Cells(Rows.Count, 1).End(xlup).Row
@@ -38,8 +39,8 @@ For i = 1 To lastrow
     End If
 Next i
 End Sub
-' Remove ì\Nî from column ëcodeí
 
+' Remove ‚Äú\N‚Äù from column ‚Äòcode‚Äô
 Sub driver_code_remove_N()
 
 lastrow = Cells(Rows.Count, 1).End(xlup).Row
@@ -51,7 +52,7 @@ For i = 1 To lastrow
 Next i
 End Sub
 
-' Remove ì\Nî from time in races csv
+' Remove ‚Äú\N‚Äù from time in races csv
 Sub races_time_remove_N()
 
 lastrow = Cells(Rows.Count, 1).End(xlup).Row
@@ -92,7 +93,7 @@ Next i
 
 End Sub
 
-' remove ìNCî from position column
+' remove ‚ÄúNC‚Äù from position column
 Sub new_csv_remove_NC()
 
 lastrow = Cells(Rows.Count, 1).End(xlup).Row
